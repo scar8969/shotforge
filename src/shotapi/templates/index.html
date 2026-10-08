@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Overview · {{ app_name }}{% endblock %}
+{% block content %}
+<h1>Overview</h1>
+<p class="sub">Self-hosted screenshot API. Cache-backed, quota-metered, keyed by <span class="mono">x-api-key</span>.</p>
+
+<div class="grid">
+  <div class="stat"><div class="k">API keys</div><div class="v">{{ key_count }}</div></div>
+  <div class="stat"><div class="k">Shots served</div><div class="v">{{ shot_count }}</div></div>
+  <div class="stat"><div class="k">Quota used</div><div class="v">{{ used_total }} <span style="font-size:13px;color:var(--muted)">/ {{ quota_total }}</span></div></div>
+  <div class="stat"><div class="k">Cached images</div><div class="v">{{ cache_files }}</div></div>
+  <div class="stat"><div class="k">Cache bytes</div><div class="v">{{ cache_bytes }}</div></div>
+  <div class="stat"><div class="k">Cache dir</div><div class="v sm mono">{{ cache_dir }}</div></div>
+</div>
+
+<h2>Capture a screenshot</h2>
+<div class="card">
+  <form class="row" method="post" action="{{ url_for('playground') }}">
+    <div style="flex:1;min-width:260px">
+      <label for="url">Target URL</label>
+      <input id="url" type="text" name="url" style="width:100%" placeholder="https://example.com" required>
+    </div>
+    <div>
+      <label for="format">Format</label>
+      <select id="format" name="format">
+        <option value="png">png</option>
+        <option value="jpeg">jpeg</option>
+      </select>
+    </div>
+    <div><label for="width">Width</label><input id="width" type="number" name="width" value="1280" min="200" max="4096"></div>
+    <div><label for="height">Height</label><input id="height" type="number" name="height" value="800" min="200" max="4096"></div>
+    <div><label for="full">Full page</label><select id="full" name="full"><option value="false">no</option><option value="true">yes</option></select></div>
+    <button type="submit">Capture</button>
+  </form>
+</div>
+
+<h2>Recent shots</h2>
+<div class="card">
+  {% if recent %}
+  <table>
+    <thead><tr><th>#</th><th>URL</th><th>Format</th><th>Bytes</th><th>Cache</th><th>Key</th><th>At (UTC)</th></tr></thead>
+    <tbody>
+    {% for s in recent %}
+      <tr>
+        <td class="mono">{{ s.id }}</td>
+        <td class="mono" style="word-break:break-all">{{ s.url }}</td>
+        <td>{{ s.format }}</td>
+        <td class="mono">{{ s.size }}</td>
+        <td>{% if s.cached %}<span class="tag g">hit</span>{% else %}<span class="tag a">miss</span>{% endif %}</td>
+        <td>{% if s.key_id %}<a class="mono" href="{{ url_for('key_detail', kid=s.key_id) }}">#{{ s.key_id }}</a>{% else %}<span class="tag">none</span>{% endif %}</td>
+        <td class="mono">{{ s.at.strftime('%Y-%m-%d %H:%M:%S') if s.at else '' }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">No shots recorded yet. Rows appear here after a successful <span class="mono">GET /api/shot</span> or a playground capture.</div>
+  {% endif %}
+</div>
+{% endblock %}

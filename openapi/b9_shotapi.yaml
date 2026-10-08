@@ -1,0 +1,33 @@
+openapi: 3.0.0
+info:
+  title: "📸 shotapi"
+  version: 0.1.0
+paths:
+  /api/shot:
+    get:
+      summary: capture
+      responses:
+        "200":
+          description: rendered image bytes
+        "400":
+          description: url query parameter missing
+        "401":
+          description: x-api-key header missing, empty or unknown
+        "429":
+          description: the key's quota is spent
+        "502":
+          description: no renderer could be started, so no image is returned
+  /api/keys:
+    post:
+      summary: create key
+      responses:
+        "200":
+          description: new key; the secret is returned exactly once
+  /api/keys/<id>/usage:
+    get:
+      summary: usage
+      responses:
+        "200":
+          description: used and quota counters for the key
+        "404":
+          description: no key with that id

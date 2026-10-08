@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Keys · {{ app_name }}{% endblock %}
+{% block content %}
+<h1>API keys</h1>
+<p class="sub">Every key is generated server-side with <span class="mono">secrets.token_urlsafe(24)</span> and shown in full only once.</p>
+
+{% if new_key %}
+<div class="flash ok">New key created — copy it now, it is not displayed again: <span class="mono">{{ new_key }}</span></div>
+{% endif %}
+
+<div class="card">
+  <form class="row" method="post" action="{{ url_for('keys_page') }}">
+    <div><label for="quota">Quota</label><input id="quota" type="number" name="quota" value="1000" min="1"></div>
+    <button type="submit">Create key</button>
+  </form>
+  <p class="sub" style="margin:10px 0 0">The JSON equivalent is <span class="mono">POST /api/keys {"quota": 1000}</span>.</p>
+</div>
+
+<h2>{{ rows|length }} key(s)</h2>
+<div class="card">
+  {% if rows %}
+  <table>
+    <thead><tr><th>#</th><th>Key</th><th>Used</th><th>Quota</th><th>Created (UTC)</th><th></th></tr></thead>
+    <tbody>
+    {% for k in rows %}
+      <tr>
+        <td class="mono">{{ k.id }}</td>
+        <td class="mono">{{ k.key[:7] }}…{{ k.key[-4:] }}</td>
+        <td class="mono">{{ k.used or 0 }}</td>
+        <td class="mono">{{ k.quota or 0 }}</td>
+        <td class="mono">{{ k.created_at.strftime('%Y-%m-%d %H:%M:%S') if k.created_at else '' }}</td>
+        <td><a href="{{ url_for('key_detail', kid=k.id) }}">usage</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">No keys yet. Protected endpoints answer <span class="mono">401 {"error": "unauthorized"}</span> until one is sent as <span class="mono">x-api-key</span>.</div>
+  {% endif %}
+</div>
+{% endblock %}

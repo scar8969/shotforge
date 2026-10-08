@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}API · {{ app_name }}{% endblock %}
+{% block content %}
+<h1>API reference</h1>
+<p class="sub">Generated from this running app's <span class="mono">url_map</span>, so it cannot drift from the code.</p>
+
+<h2>Registered endpoints</h2>
+<div class="card">
+  <table>
+    <thead><tr><th>Methods</th><th>Rule</th><th>Endpoint</th></tr></thead>
+    <tbody>
+    {% for r in rules %}
+      <tr><td class="mono">{{ r.methods }}</td><td class="mono">{{ r.rule }}</td><td class="mono">{{ r.endpoint }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<h2>Contract</h2>
+<div class="card">
+  <table>
+    <thead><tr><th>Route</th><th>Auth</th><th>Success</th><th>Failure modes</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="mono">GET /api/shot?url=&amp;format=&amp;width=&amp;height=&amp;full=</td>
+        <td class="mono">x-api-key</td>
+        <td class="mono">200 image/png|jpeg</td>
+        <td class="mono">401 unauthorized · 429 quota exceeded · 400 url required · 502 capture failed</td>
+      </tr>
+      <tr>
+        <td class="mono">POST /api/keys {"quota": 1000}</td>
+        <td>none</td>
+        <td class="mono">200 {"key": "sk_…"}</td>
+        <td class="mono">500 if the body is missing or not JSON</td>
+      </tr>
+      <tr>
+        <td class="mono">GET /api/keys/&lt;id&gt;/usage</td>
+        <td>none</td>
+        <td class="mono">200 {"used": n, "quota": n}</td>
+        <td class="mono">404 unknown key id</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="sub" style="margin:12px 0 0">
+    <strong>401 is expected behaviour, not a defect.</strong> <span class="mono">GET /api/shot</span> without an
+    <span class="mono">x-api-key</span> header is designed to answer <span class="mono">401 {"error": "unauthorized"}</span>.
+    The same endpoint answers <strong>502</strong> in any environment where Chromium cannot be started — that is the
+    capture backend failing closed, also by design.
+  </p>
+</div>
+{% endblock %}

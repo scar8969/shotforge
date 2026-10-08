@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}{{ app_name }}{% endblock %}</title>
+<style>
+:root{--bg:#0d0f14;--card:#151922;--panel:#101319;--border:#222834;--text:#e7ebf3;--muted:#8d97ab;--accent:#4f8cff;--green:#3ddc84;--red:#ff5c5c;--amber:#ffb020}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.55 ui-sans-serif,system-ui,"Segoe UI",Roboto,sans-serif}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+nav{display:flex;align-items:center;gap:18px;padding:13px 22px;border-bottom:1px solid var(--border);background:#0a0c11;position:sticky;top:0;z-index:5}
+nav .brand{font-weight:700;letter-spacing:.2px}
+nav a{color:var(--muted);font-size:13px}
+nav a.on{color:var(--text);font-weight:600}
+nav .sp{flex:1}
+main{max-width:1080px;margin:0 auto;padding:26px 22px 64px}
+h1{font-size:20px;margin:0 0 2px}
+h2{font-size:15px;margin:26px 0 10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+p.sub{color:var(--muted);margin:0 0 18px;font-size:13px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin:0 0 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.stat{background:var(--panel);border:1px solid var(--border);border-radius:9px;padding:12px 14px}
+.stat .k{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.7px}
+.stat .v{font-size:22px;font-weight:650;margin-top:3px}
+.stat .v.sm{font-size:14px;font-weight:500;word-break:break-all}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.6px}
+tr:last-child td{border-bottom:none}
+.mono{font-family:ui-monospace,Consolas,"Courier New",monospace;font-size:12px}
+form.row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin:0}
+label{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px}
+input[type=text],input[type=number],select{background:var(--panel);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:8px 10px;font:inherit;font-size:13px;min-width:90px}
+input[type=text]{min-width:0}
+button,.btn{background:var(--accent);color:#06101f;border:0;border-radius:7px;padding:9px 15px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+button.ghost{background:transparent;color:var(--text);border:1px solid var(--border);font-weight:500}
+button.danger{background:transparent;color:var(--red);border:1px solid var(--red);font-weight:500}
+.tag{display:inline-block;padding:1px 8px;border-radius:20px;font-size:11px;border:1px solid var(--border);color:var(--muted)}
+.tag.g{color:var(--green);border-color:#1f5a37;background:#0f2418}
+.tag.r{color:var(--red);border-color:#5c2323;background:#25100f}
+.tag.a{color:var(--amber);border-color:#5a4318;background:#241c0d}
+.flash{border-radius:8px;padding:10px 14px;margin:0 0 14px;font-size:13px;border:1px solid var(--border);background:var(--panel)}
+.flash.ok{border-color:#1f5a37;color:var(--green)}
+.flash.err{border-color:#5c2323;color:var(--red)}
+pre{background:#080a0e;border:1px solid var(--border);border-radius:8px;padding:12px;overflow:auto;font-size:12px;margin:0;max-height:320px}
+.empty{color:var(--muted);font-size:13px;padding:10px 2px}
+footer{border-top:1px solid var(--border);color:var(--muted);font-size:12px;padding:16px 22px;text-align:center}
+</style>
+</head>
+<body>
+<nav>
+  <span class="brand">{{ app_name }}</span>
+  <a href="{{ url_for('index') }}"{% if request.endpoint == 'index' %} class="on"{% endif %}>Overview</a>
+  <a href="{{ url_for('playground') }}"{% if request.endpoint == 'playground' %} class="on"{% endif %}>Playground</a>
+  <a href="{{ url_for('keys_page') }}"{% if request.endpoint in ['keys_page','key_detail'] %} class="on"{% endif %}>Keys</a>
+  <a href="{{ url_for('api_docs') }}"{% if request.endpoint == 'api_docs' %} class="on"{% endif %}>API</a>
+  <span class="sp"></span>
+  <a href="{{ url_for('shot.shot') }}" class="mono">GET /api/shot</a>
+</nav>
+<main>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}<div class="flash {{ cat }}">{{ msg }}</div>{% endfor %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</main>
+<footer>{{ app_name }} v0.1.0 · self-hosted · <a href="{{ url_for('health') }}">/api/health</a></footer>
+{% block scripts %}{% endblock %}
+</body>
+</html>

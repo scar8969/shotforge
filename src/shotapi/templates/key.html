@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Key #{{ k.id }} · {{ app_name }}{% endblock %}
+{% block content %}
+<h1>Key #{{ k.id }}</h1>
+<p class="sub mono">{{ k.key[:7] }}…{{ k.key[-4:] }} · created {{ k.created_at.strftime('%Y-%m-%d %H:%M:%S') if k.created_at else 'n/a' }} UTC</p>
+
+<div class="grid">
+  <div class="stat"><div class="k">Used</div><div class="v">{{ k.used or 0 }}</div></div>
+  <div class="stat"><div class="k">Quota</div><div class="v">{{ k.quota or 0 }}</div></div>
+  <div class="stat"><div class="k">Remaining</div><div class="v">{{ remaining }}</div></div>
+  <div class="stat"><div class="k">Shots logged</div><div class="v">{{ shots|length }}</div></div>
+</div>
+
+<div class="card">
+  <form class="row" method="post" action="{{ url_for('key_reset', kid=k.id) }}">
+    <button class="danger" type="submit">Reset used → 0</button>
+    <span class="mono" style="color:var(--muted);font-size:12px">GET /api/keys/{{ k.id }}/usage → {"used": {{ k.used or 0 }}, "quota": {{ k.quota or 0 }}}</span>
+  </form>
+</div>
+
+<h2>Shots logged against this key</h2>
+<div class="card">
+  {% if shots %}
+  <table>
+    <thead><tr><th>#</th><th>URL</th><th>Format</th><th>Bytes</th><th>Cache</th><th>At (UTC)</th></tr></thead>
+    <tbody>
+    {% for s in shots %}
+      <tr>
+        <td class="mono">{{ s.id }}</td>
+        <td class="mono" style="word-break:break-all">{{ s.url }}</td>
+        <td>{{ s.format }}</td>
+        <td class="mono">{{ s.size }}</td>
+        <td>{% if s.cached %}<span class="tag g">hit</span>{% else %}<span class="tag a">miss</span>{% endif %}</td>
+        <td class="mono">{{ s.at.strftime('%Y-%m-%d %H:%M:%S') if s.at else '' }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">This key has not served a shot yet.</div>
+  {% endif %}
+</div>
+{% endblock %}

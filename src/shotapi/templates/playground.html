@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Playground · {{ app_name }}{% endblock %}
+{% block content %}
+<h1>Playground</h1>
+<p class="sub">Runs the same cache → capture → store path as the API, in-process, without spending a key quota.</p>
+
+<div class="card">
+  <form class="row" method="post" action="{{ url_for('playground') }}">
+    <div style="flex:1;min-width:260px">
+      <label for="url">Target URL</label>
+      <input id="url" type="text" name="url" style="width:100%" value="{{ form.url }}" placeholder="https://example.com">
+    </div>
+    <div>
+      <label for="format">Format</label>
+      <select id="format" name="format">
+        <option value="png"{% if form.format == 'png' %} selected{% endif %}>png</option>
+        <option value="jpeg"{% if form.format == 'jpeg' %} selected{% endif %}>jpeg</option>
+      </select>
+    </div>
+    <div><label for="width">Width</label><input id="width" type="number" name="width" value="{{ form.width }}" min="200" max="4096"></div>
+    <div><label for="height">Height</label><input id="height" type="number" name="height" value="{{ form.height }}" min="200" max="4096"></div>
+    <div><label for="full">Full page</label><select id="full" name="full"><option value="false"{% if not form.full %} selected{% endif %}>no</option><option value="true"{% if form.full %} selected{% endif %}>yes</option></select></div>
+    <button type="submit">Capture</button>
+  </form>
+</div>
+
+{% if error %}
+<div class="card">
+  <h2 style="margin-top:0">Capture failed</h2>
+  <p class="sub" style="margin-bottom:10px">The capture backend raised. In this environment Chromium cannot start, so this is the expected path — the API contract answers <span class="mono">502 {"error": "capture failed"}</span>.</p>
+  <pre>{{ error }}</pre>
+</div>
+{% endif %}
+
+{% if result %}
+<div class="card">
+  <h2 style="margin-top:0">Result</h2>
+  <div class="grid">
+    <div class="stat"><div class="k">Status</div><div class="v">200</div></div>
+    <div class="stat"><div class="k">Cache</div><div class="v">{% if result.cached %}<span class="tag g">hit</span>{% else %}<span class="tag a">miss</span>{% endif %}</div></div>
+    <div class="stat"><div class="k">Bytes</div><div class="v">{{ result.size }}</div></div>
+    <div class="stat"><div class="k">Content-Type</div><div class="v sm mono">{{ result.content_type }}</div></div>
+    <div class="stat"><div class="k">Cache key</div><div class="v sm mono">{{ result.cache_key[:24] }}…</div></div>
+  </div>
+</div>
+{% endif %}
+
+<h2>Cache index ({{ cache_files }} file(s), {{ cache_bytes }} bytes)</h2>
+<div class="card">
+  {% if entries %}
+  <table>
+    <thead><tr><th>Cache key</th><th>Bytes</th><th>Modified (UTC)</th></tr></thead>
+    <tbody>
+    {% for e in entries %}<tr><td class="mono">{{ e.name }}</td><td class="mono">{{ e.size }}</td><td class="mono">{{ e.mtime }}</td></tr>{% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">Cache is empty. Files are written under <span class="mono">{{ cache_dir }}</span> with a 1&nbsp;hour TTL.</div>
+  {% endif %}
+</div>
+{% endblock %}
