@@ -1,4 +1,4 @@
-# Shotapi
+# shotforge
 
 > A screenshot service with one API key per caller, an on-disk image cache and a hard per-key quota. It returns rendered image bytes, or an honest 502 when no renderer can be started.
 
@@ -6,8 +6,8 @@
 [![python](https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-blue)](pyproject.toml)
 [![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-b9_shotapi is a Flask service delivered as an installable, typed, test-covered
-distribution. The business logic is unchanged from the original skeleton; what
+shotforge is a Flask service delivered as an installable, typed, test-covered
+distribution. The business logic is unchanged from the original service; what
 is new is the engineering around it: a packaging story, a configuration
 contract, structured observability, operational endpoints, a hardened
 container, and the gates that keep all of that true.
@@ -17,7 +17,7 @@ container, and the gates that keep all of that true.
 ## Quickstart
 
 ```sh
-git clone <your-fork> b9_shotapi && cd b9_shotapi
+git clone <your-fork> shotforge && cd shotforge
 python -m venv .venv
 . .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
@@ -124,7 +124,7 @@ variable, rather than surfacing as a confusing runtime error later.
 | `/api/shot` | GET | JSON |
 | `/api/shot` | T | JSON |
 
-The frozen machine-readable contract is `openapi/b9_shotapi.yaml`; it is the
+The frozen machine-readable contract is `openapi/shotforge.yaml`; it is the
 source of truth for path and method coverage.
 
 ---
@@ -142,9 +142,9 @@ source of truth for path and method coverage.
 │   ├── ARCHITECTURE.md
 │   └── OPERATIONS.md
 ├── openapi
-│   └── b9_shotapi.yaml
+│   └── shotforge.yaml
 ├── schema
-│   └── b9_shotapi.sql
+│   └── shotforge.sql
 ├── src
 │   └── shotapi
 │       ├── shot
@@ -162,7 +162,7 @@ source of truth for path and method coverage.
 │       └── py.typed
 ├── tests
 │   ├── conftest.py
-│   ├── test_b9_shotapi.py
+│   ├── test_shotforge.py
 │   ├── test_config.py
 │   └── test_ops.py
 ├── .dockerignore

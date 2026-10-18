@@ -3,13 +3,13 @@ requires = ["setuptools>=69", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "b9-shotapi"
+name = "shotforge"
 version = "0.1.0"
-description = "A screenshot service with one API key per caller, an on-disk image cache and a hard per-key quota. It returns rendered image bytes, or an honest 502 when no renderer can be started."
+description = "Screenshot API: per-caller keys, on-disk cache, hard quotas, and an honest 502 when no renderer starts."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
-authors = [{ name = "project-skeletons maintainers" }]
+authors = [{ name = "Priyanshu Rout" }]
 keywords = ["flask", "service", "shotapi"]
 classifiers = [
   "Development Status :: 4 - Beta",
@@ -47,7 +47,7 @@ Documentation = "https://example.invalid/shotapi/docs"
 Issues = "https://example.invalid/shotapi/issues"
 
 [project.scripts]
-b9-shotapi = "shotapi.cli:main"
+shotforge = "shotapi.cli:main"
 
 [tool.setuptools]
 package-dir = { "" = "src" }

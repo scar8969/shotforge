@@ -1,4 +1,4 @@
-"""B9 shotapi — tests. Run: pytest test_b9_shotapi.py"""
+"""B9 shotapi — tests. Run: pytest test_shotforge.py"""
 import sys, os
 
 import pytest

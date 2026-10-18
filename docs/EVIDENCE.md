@@ -81,7 +81,7 @@ process_uptime_seconds 0.733
 `/version` answered **200**:
 
 ```
-{"config":{"app_name":"shotapi","data_dir":"C:\\Users\\priya\\Desktop\\project-skeletons\\projects\\b9_shotapi\\var","database_configured":false,"debug":false,"env":"development","host":"0.0.0.0","legacy_env_present":[],"log_json":true,"log_level":"INFO","port":8000,"secret_key_configured":false},"paths":{"data_dir":"C:\\Users\\priya\\Desktop\\project-skeletons\\projects\\b9_shotapi\\var","instanc
+{"config":{"app_name":"shotapi","data_dir":".\\var","database_configured":false,"debug":false,"env":"development","host":"0.0.0.0","legacy_env_present":[],"log_json":true,"log_level":"INFO","port":8000,"secret_key_configured":false},"paths":{"data_dir":".\\var","instanc
 ```
 
 ## Headers observed on /healthz

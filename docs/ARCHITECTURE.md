@@ -9,7 +9,7 @@ they do, and what breaks first under load.
 
 ## 1. Context
 
-b9_shotapi is a single-process Flask service. It owns its own database (SQLite by
+shotforge is a single-process Flask service. It owns its own database (SQLite by
 default, any SQLAlchemy-supported backend via `DATABASE_URL`) and is deployed
 behind a reverse proxy or an orchestrator.
 
@@ -76,7 +76,7 @@ flowchart TB
 | `templates/key.html` | asset |
 | `templates/keys.html` | asset |
 | `templates/playground.html` | asset |
-| `tests/test_b9_shotapi.py` | module |
+| `tests/test_shotforge.py` | module |
 | `_app.py` | asset |
 
 ---
@@ -139,8 +139,8 @@ writable lives under `/app`.
 
 | Table | Owner |
 | --- | --- |
-| `api_keys` | owned by `b9_shotapi` |
-| `shots` | owned by `b9_shotapi` |
+| `api_keys` | owned by `shotforge` |
+| `shots` | owned by `shotforge` |
 
 Tables are created by the application's own bootstrap on first use. No migration
 tool is wired in; the schema is additive, and the service tolerates a missing or
