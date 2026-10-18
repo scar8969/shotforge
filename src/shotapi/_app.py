@@ -1,21 +1,23 @@
+import os
+import traceback
+from datetime import datetime
+
+from flask import Flask, flash, jsonify, redirect, render_template, request, url_for
+
+from . import paths
 from .models import ApiKey, Shot, db
 from .shot.api import bp
 from .shot.cache import cache_key, get, put
 from .shot.capture import capture
 
-import os
-import traceback
-from datetime import datetime
-from pathlib import Path
-
-from flask import Flask, flash, jsonify, redirect, render_template, request, url_for
-from . import paths
-
 paths.INSTANCE_DIR.mkdir(parents=True, exist_ok=True)
+
 
 def build_app():
     """Build the application: configuration, database, then routes."""
-    app = Flask(__name__, template_folder=str(paths.TEMPLATES_DIR), instance_path=str(paths.INSTANCE_DIR))
+    app = Flask(
+        __name__, template_folder=str(paths.TEMPLATES_DIR), instance_path=str(paths.INSTANCE_DIR)
+    )
     app.secret_key = os.environ.get("SECRET_KEY", "shotapi-dev-secret")
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + str(paths.INSTANCE_DIR / "shotapi.db")
     db.init_app(app)
@@ -25,7 +27,7 @@ def build_app():
 
     @app.context_processor
     def _ctx():
-        return {"app_name": "\U0001F4F8 shotapi"}
+        return {"app_name": "\U0001f4f8 shotapi"}
 
     def _cache_dir():
         from .shot import cache as _c
@@ -45,7 +47,9 @@ def build_app():
                     {
                         "name": name,
                         "size": st.st_size,
-                        "mtime": datetime.utcfromtimestamp(st.st_mtime).strftime("%Y-%m-%d %H:%M:%S"),
+                        "mtime": datetime.utcfromtimestamp(st.st_mtime).strftime(
+                            "%Y-%m-%d %H:%M:%S"
+                        ),
                     }
                 )
         return out
@@ -63,8 +67,10 @@ def build_app():
             "index.html",
             key_count=ApiKey.query.count(),
             shot_count=Shot.query.count(),
-            used_total=db.session.query(db.func.coalesce(db.func.sum(ApiKey.used), 0)).scalar() or 0,
-            quota_total=db.session.query(db.func.coalesce(db.func.sum(ApiKey.quota), 0)).scalar() or 0,
+            used_total=db.session.query(db.func.coalesce(db.func.sum(ApiKey.used), 0)).scalar()
+            or 0,
+            quota_total=db.session.query(db.func.coalesce(db.func.sum(ApiKey.quota), 0)).scalar()
+            or 0,
             cache_files=len(_cache_entries()),
             cache_bytes=_cache_bytes(),
             cache_dir=_cache_dir(),
@@ -129,7 +135,11 @@ def build_app():
                         "content_type": "image/" + form["format"],
                         "cache_key": ck,
                     }
-                    flash("Captured %d bytes (%s)." % (len(data), "cache hit" if cached else "cache miss"), "ok")
+                    flash(
+                        "Captured %d bytes (%s)."
+                        % (len(data), "cache hit" if cached else "cache miss"),
+                        "ok",
+                    )
 
         return render_template(
             "playground.html",
@@ -157,7 +167,9 @@ def build_app():
             db.session.commit()
             new_key = k.key
             flash("Key #%d created." % k.id, "ok")
-        return render_template("keys.html", rows=ApiKey.query.order_by(ApiKey.id.desc()).all(), new_key=new_key)
+        return render_template(
+            "keys.html", rows=ApiKey.query.order_by(ApiKey.id.desc()).all(), new_key=new_key
+        )
 
     @app.get("/k/<int:kid>")
     def key_detail(kid):
@@ -181,7 +193,9 @@ def build_app():
     def api_docs():
         rules = []
         for r in sorted(app.url_map.iter_rules(), key=lambda r: str(r)):
-            methods = ",".join(sorted(m for m in r.methods if m in {"GET", "POST", "PUT", "PATCH", "DELETE"}))
+            methods = ",".join(
+                sorted(m for m in r.methods if m in {"GET", "POST", "PUT", "PATCH", "DELETE"})
+            )
             if not methods:
                 continue
             rules.append({"methods": methods, "rule": str(r), "endpoint": r.endpoint})
@@ -191,5 +205,6 @@ def build_app():
         app.run(host="0.0.0.0", port=int(os.environ.get("PORT", "8000")))
 
     return app
+
 
 app = build_app()

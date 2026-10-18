@@ -7,6 +7,7 @@
 
 Talks to a running instance (see README: python wsgi.py).
 """
+
 import argparse
 import json
 import os
@@ -15,17 +16,23 @@ import urllib.request
 
 DEFAULT_BASE = os.environ.get("SHOTAPI_URL", "http://127.0.0.1:8000")
 
+
 def _call(method, path, data=None, headers=None, base=None):
-    req = urllib.request.Request((base or DEFAULT_BASE).rstrip("/") + path,
-                                 data=data, method=method, headers=headers or {})
+    req = urllib.request.Request(
+        (base or DEFAULT_BASE).rstrip("/") + path, data=data, method=method, headers=headers or {}
+    )
     with urllib.request.urlopen(req) as r:
         return r.status, dict(r.headers), r.read()
 
+
 def cmd_shot(args):
-    q = urllib.parse.urlencode({"url": args.url, "format": args.fmt, "full": str(args.full).lower()})
+    q = urllib.parse.urlencode(
+        {"url": args.url, "format": args.fmt, "full": str(args.full).lower()}
+    )
     try:
-        status, headers, data = _call("GET", "/api/shot?" + q,
-                                      headers={"x-api-key": args.key}, base=args.base)
+        status, headers, data = _call(
+            "GET", "/api/shot?" + q, headers={"x-api-key": args.key}, base=args.base
+        )
     except urllib.error.HTTPError as exc:
         body = exc.read().decode("utf-8", "replace").strip()
         print("capture failed: HTTP %s %s" % (exc.code, body))
@@ -34,8 +41,11 @@ def cmd_shot(args):
         return 1
     with open(args.out, "wb") as f:
         f.write(data)
-    print("HTTP %s %s %d bytes -> %s" % (status, headers.get("Content-Type", ""), len(data), args.out))
+    print(
+        "HTTP %s %s %d bytes -> %s" % (status, headers.get("Content-Type", ""), len(data), args.out)
+    )
     return 0
+
 
 def cmd_usage(args):
     try:
@@ -46,17 +56,20 @@ def cmd_usage(args):
     print("HTTP %s %s" % (status, data.decode().strip()))
     return 0
 
+
 def cmd_newkey(args):
     payload = json.dumps({"quota": args.quota}).encode()
     try:
-        status, headers, data = _call("POST", "/api/keys", payload,
-                                      {"Content-Type": "application/json"}, args.base)
+        status, headers, data = _call(
+            "POST", "/api/keys", payload, {"Content-Type": "application/json"}, args.base
+        )
     except urllib.error.HTTPError as exc:
         print("request failed: HTTP %s %s" % (exc.code, exc.read().decode("utf-8", "replace")))
         return 1
     print("HTTP %s %s" % (status, data.decode().strip()))
     print("Store this key now - the API only returns it once.")
     return 0
+
 
 def main(argv=None):
     p = argparse.ArgumentParser(prog="shot", description="shotapi command line client")

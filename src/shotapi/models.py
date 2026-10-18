@@ -1,7 +1,9 @@
 from datetime import datetime
+
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
+
 
 class ApiKey(db.Model):
     __tablename__ = "api_keys"
@@ -10,6 +12,7 @@ class ApiKey(db.Model):
     quota = db.Column(db.Integer, default=1000)
     used = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
 
 class Shot(db.Model):
     __tablename__ = "shots"
