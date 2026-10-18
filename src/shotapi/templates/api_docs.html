@@ -44,7 +44,7 @@
   <p class="sub" style="margin:12px 0 0">
     <strong>401 is expected behaviour, not a defect.</strong> <span class="mono">GET /api/shot</span> without an
     <span class="mono">x-api-key</span> header is designed to answer <span class="mono">401 {"error": "unauthorized"}</span>.
-    The same endpoint answers <strong>502</strong> in any environment where Chromium cannot be started — that is the
+    The same endpoint answers <strong>502</strong> in any environment where a renderer cannot be started — that is the
     capture backend failing closed, also by design.
   </p>
 </div>

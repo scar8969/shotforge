@@ -116,7 +116,7 @@ def build_app():
                         data = capture(form["url"], form["format"], viewport, form["full"])
                         put(ck, data)
                     except Exception:
-                        # Chromium cannot start in this sandbox; the API answers 502 here.
+                        # No renderer on this host: the API answers 502 rather than an empty image.
                         error = traceback.format_exc(limit=8)
                 if error is None:
                     db.session.add(

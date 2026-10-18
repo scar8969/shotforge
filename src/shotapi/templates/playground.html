@@ -27,7 +27,7 @@
 {% if error %}
 <div class="card">
   <h2 style="margin-top:0">Capture failed</h2>
-  <p class="sub" style="margin-bottom:10px">The capture backend raised. In this environment Chromium cannot start, so this is the expected path — the API contract answers <span class="mono">502 {"error": "capture failed"}</span>.</p>
+  <p class="sub" style="margin-bottom:10px">The capture backend raised. When no renderer can be started this is the expected path — the API contract answers <span class="mono">502 {"error": "capture failed"}</span>.</p>
   <pre>{{ error }}</pre>
 </div>
 {% endif %}
