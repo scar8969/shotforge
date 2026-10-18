@@ -194,7 +194,11 @@ def build_app():
         rules = []
         for r in sorted(app.url_map.iter_rules(), key=lambda r: str(r)):
             methods = ",".join(
-                sorted(m for m in r.methods if m in {"GET", "POST", "PUT", "PATCH", "DELETE"})
+                sorted(
+                    m
+                    for m in (r.methods or set())
+                    if m in {"GET", "POST", "PUT", "PATCH", "DELETE"}
+                )
             )
             if not methods:
                 continue
