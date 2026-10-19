@@ -4,7 +4,7 @@ Every line below was produced by a command run against this exact checkout, on t
 
 | | |
 | --- | --- |
-| Generated | 2026-10-19 02:25 |
+| Generated | 2026-10-19 09:42 |
 | Python | 3.14.7 |
 | Platform | Windows 11 |
 
@@ -15,7 +15,7 @@ python -m pytest -q
 ```
 
 - exit code **0**
-- 22 passed in 1.07s
+- 22 passed in 0.92s
 
 ## Static gates
 
@@ -36,6 +36,24 @@ The application was imported through `wsgi.py` and each GET path declared in `op
 | 404 | `/api/keys/1/usage` | 51 | application/json |
 
 2 paths walked, 0 of them raised or answered 5xx.
+
+## CLI
+
+```
+usage: shot [-h] [--base BASE] {shot,usage,newkey} ...
+
+shotapi command line client
+
+positional arguments:
+  {shot,usage,newkey}
+    shot               capture a screenshot through the API
+    usage              show quota usage for a key id
+    newkey             create a new API key
+
+options:
+  -h, --help           show this help message and exit
+  --base BASE          base URL of a running instance
+```
 
 ## Screenshots
 
